@@ -40,13 +40,22 @@ def show_splash():
         
         </style>
         <div style="display:flex; justify-content:center; align-items:center; height:80vh; flex-direction:column;">
-            <img src="data:image/png;base64,{encoded_logo}" style="width:100px; height:100px;" />
+            <img src="data:image/png;base64,{encoded_logo}" class="static-logo"style="width:100px; height:100px;" />
             <h2 style="color:#2563EB; font-family: 'Inter' sans-serif; margin-top: 2px; padding-left: 12px;">Ad-Box</h2>
         </div>
         """,
         unsafe_allow_html=True,
     )
-
+if st.session_state.show_splash:
+    show_splash()
+    elapsed = time.time() - st.session_state.splash_start_time
+    if elapsed > SPLASH_DURATION:
+        st.session_state.show_splash = False
+        st.rerun()
+    else:
+        time.sleep(0.1)
+        st.rerun()
+    st.stop()
 def get_cached_social_icon(filename, target_size):
     main_folder_path = filename
     asset_folder_path = os.path.join("assets", filename)
