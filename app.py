@@ -19,9 +19,8 @@ if "show_splash" not in st.session_state:
     st.session_state.splash_start_time = time.time()
 SPLASH_DURATION = 3
 def show_splash():
-    encoded_logo = get_encoded_logo()
-    if encoded_logo is None:
-        return
+    with open("logo.png", "rb") as image_file:
+        encoded_logo = base64.b64encode(image_file.read()).decode()
     
     st.markdown(
         f"""     
@@ -38,49 +37,15 @@ def show_splash():
             padding: 2px;
             border-radius: 8px;
         }}
-        @keyframes pulseZoom {{
-            0% {{
-                transform: scale(1);
-                opacity: 1;
-            }}
-            50% {{
-                transform: scale(1.4);
-                 opacity: 0.85;
-            }}
-            100% {{
-                transform: scale(1);
-                 opacity: 1;
-            }}
-        }}
-        .pulse-zoom {{
-            animation-name: pulseZoom;
-            animation-duration: 2.5s;
-            animation-iteration-count: infinite;
-            animation-timing-function: ease-in-out;
-            animation-fill-mode: forwards;
-            will-change: transform, opacity;                      
-            filter: saturate(1.1) contrast(1.05);
-            box-shadow: none;
-        }}
         
         </style>
         <div style="display:flex; justify-content:center; align-items:center; height:80vh; flex-direction:column;">
-            <img src="data:image/png;base64,{encoded_logo}" class="pulse-zoom" style="width:100px; height:100px;" />
+            <img src="data:image/png;base64,{encoded_logo}" style="width:100px; height:100px;" />
             <h2 style="color:#2563EB; font-family: 'Inter' sans-serif; margin-top: 2px; padding-left: 12px;">Ad-Box</h2>
         </div>
         """,
         unsafe_allow_html=True,
     )
-if st.session_state.show_splash:
-    show_splash()
-    elapsed = time.time() - st.session_state.splash_start_time
-    if elapsed > SPLASH_DURATION:
-        st.session_state.show_splash = False
-        st.rerun()
-    else:
-        time.sleep(0.1)
-        st.rerun()
-    st.stop()
 
 def get_cached_social_icon(filename, target_size):
     main_folder_path = filename
