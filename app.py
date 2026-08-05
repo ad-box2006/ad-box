@@ -8,6 +8,7 @@ import textwrap
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageEnhance, ImageOps
 import time
 import base64
+@st.cache_data(show_spinner=False)
 def get_encoded_logo():
     if os.path.exists("logo.png"):
         with open("logo.png", "rb") as image_file:
@@ -18,8 +19,9 @@ if "show_splash" not in st.session_state:
     st.session_state.splash_start_time = time.time()
 SPLASH_DURATION = 3
 def show_splash():
-    with open("logo.png", "rb") as image_file:
-        encoded_logo = base64.b64encode(image_file.read()).decode()
+    encoded_logo = get_encoded_logo()
+    if encoded_logo is None:
+        return
     
     st.markdown(
         f"""     
