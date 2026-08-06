@@ -830,11 +830,11 @@ else:
                     active_footer_ceiling = h - 30
                         
             scale_multiplier = max(w, h)  / 1080.0
-            headline_font_size = int(42 * scale_multiplier)
-            badge_font_size = int (32 * scale_multiplier)
+            headline_font_size = int(100 * scale_multiplier)
+            badge_font_size = int (100 * scale_multiplier)
             try:
-                font_headline = ImageFont.truetype("Arial.ttf", headline_font_size)
-                font_badge = ImageFont.truetype("Arial.ttf", badge_font_size)
+                font_headline = ImageFont.truetype("Arial.ttf", 72)
+                font_badge = ImageFont.truetype("Arial.ttf", 45)
             except:
                 font_headline = ImageFont.load_default()
                 font_badge = ImageFont.load_default()
