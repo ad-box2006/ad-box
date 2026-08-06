@@ -671,6 +671,7 @@ else:
             selected_hook_template = st.selectbox("Select your ad hook template", options=FREE_PRESET_HOOKS, key="ad_hook_selection_widget")
             active_product_text = product_name_val.strip() if product_name_val else "Product"
             final_processed_hook_text = selected_hook_template.format(product_name=active_product_text) if FREE_PRESET_HOOKS else "Explore catalog collections today."
+            st.session_state.headline_font_scale = st.slider("Headline font size scale", 30, 250, st.session_state.headline_font_scale)
             st.session_state.ga_brightness = st.slider("Base Image Brightness Scale", 0.5, 2.0, 1.0)
             st.session_state.ga_contrast = st.slider("Base Image Contrast Scale", 0.5, 2.0, 1.1)
             st.session_state.ga_blur = st.slider("Layer Blur Filter Intensity", 0, 10, 0)
