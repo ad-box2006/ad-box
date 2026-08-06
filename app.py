@@ -8,6 +8,15 @@ import textwrap
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageEnhance, ImageOps
 import time
 import base64
+img = Image.new("RGB", (400, 200), "black")
+draw = ImageDraw.Draw(img)
+try: font = ImageFont.truetype("arial.ttf", 72)
+except: font = ImageFont.load_default()
+draw.text((10, 50), "BIG TEXT", font=font, fill="white")
+buf = io.BytesIO()
+img.save(buf, format="PNG")
+buf.seek(0)
+st.image(buf)
 @st.cache_data(show_spinner=False)
 def get_global_logo_uri():
     if os.path.exists("logo.png"):
@@ -1038,12 +1047,12 @@ else:
                 badge_overlay = Image.new("RGBA", processed_layer.size, (0, 0, 0, 0))
                 badge_draw = ImageDraw.Draw(badge_overlay)
                 badge_draw.rounded_rectangle([ad_corner_x1, ad_corner_y1, ad_corner_x1 + ad_box_w, ad_corner_y1 + ad_box_h], fill=(15, 23, 42, 90), radius=4)
-                ad_label_font_size = max(80, int(w * 0.045))
+                ad_label_font_size = max(38, int(w * 0.045))
                 try: ad_label_font = ImageFont.truetype("arialbd.ttf", ad_label_font_size)
                 except: ad_label_font = ImageFont.load_default() 
              
                 try: ad_text_w = draw.textlength("Ad", font=ad_label_font)
-                except: ad_text_w = len("Ad") *  (ad_label_font_size * 0.100)
+                except: ad_text_w = len("Ad") *  (ad_label_font_size * 0.045)
                 ad_txt_x = ad_corner_x1 + int((ad_box_w - ad_text_w) / 2)
                 ad_txt_y = ad_corner_y1 + int((ad_box_h - ad_label_font_size) / 2) - 2
                 badge_draw.text((ad_txt_x, ad_txt_y), "Ad", fill=(255, 255, 255, 255), font=ad_label_font) 
