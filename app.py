@@ -9,19 +9,19 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageEnhance, ImageOps
 import time
 import base64
 @st.cache_data(show_spinner=False)
-def get_encoded_logo():
+def get_global_logo_uri():
     if os.path.exists("logo.png"):
         with open("logo.png", "rb") as image_file:
-            return base64.b64encode(image_file.read()).decode()
+            return f"data:image/png;base64,{base64.b64encode(image_file.read()).decode()}"
     return None
+CACHED_LOGO_URI = get_global_logo_uri()
 if "show_splash" not in st.session_state:
     st.session_state.show_splash = True
     st.session_state.splash_start_time = time.time()
 SPLASH_DURATION = 3
 def show_splash():
-    with open("logo.png", "rb") as image_file:
-        encoded_logo = base64.b64encode(image_file.read()).decode()
-    
+    logo_src = CACHED_LOGO_URI if CACHED_LOGO_URI else ""
+     
     st.markdown(
         f"""     
         <style>
@@ -40,7 +40,7 @@ def show_splash():
         
         </style>
         <div style="display:flex; justify-content:center; align-items:center; height:80vh; flex-direction:column;">
-            <img src="data:image/png;base64,{encoded_logo}" class="static-logo"style="width:100px; height:100px;" />
+            <img src="{logo_src}" class="static-logo"style="width:100px; height:100px;" />
             <h2 style="color:#2563EB; font-family: 'Inter' sans-serif; margin-top: 2px; padding-left: 12px;">Ad-Box</h2>
         </div>
         """,
@@ -547,11 +547,10 @@ if not st.session_state.logged_in:
             st.rerun()
 else:
     inject_core_dashboard_styles()
-    logo_data = get_encoded_logo()
-    if logo_data:
+    if CACHED_LOGO_URI:
         st.markdown(f"""
             <div style="position: fixed; top: 15px; left: 50px; z-index: 999999 !important; pointer-events: none !important;;">
-                <img src="data:image/png;base64,{logo_data}" width="30" height="30">
+                <img src="{CACHED_LOGO_URI}" width="30" height="30">
             </div>
         """, unsafe_allow_html=True)
     st.sidebar.markdown("### Ad-Box Panel")
@@ -830,7 +829,9 @@ else:
                 else:
                     active_footer_ceiling = h - 40 
                         
-                
+            scale_multiplier = max(w, h)  / 1080.0
+            headline_font_size = int(42 * scale_multiplier)
+            badge_font_size = int (28 * scale_multiplier)
             try:
                 font_headline = ImageFont.truetype("Arial.ttf", 36)
                 font_badge = ImageFont.truetype("Arial.ttf", 24)
