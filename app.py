@@ -844,7 +844,7 @@ else:
       
                 overlay_layer = Image.new('RGBA', processed_layer.size, (0,0,0,0))
                 overlay_draw = ImageDraw.Draw(overlay_layer)
-                overlay_draw.rectangle([(0, 0), (canvas_w, if 'canvas_w' in locals() else processed_layer.width, banner_height)], fill=(0, 0, 0, 180))
+                overlay_draw.rectangle([(0, 0), (canvas_w if 'canvas_w' in locals() else processed_layer.width, banner_height)], fill=(0, 0, 0, 180))
                 processed_layer = Image.alpha_composite(processed_layer.convert("RGBA"), overlay_layer).convert("RGB")
                  
                 draw = ImageDraw.Draw(processed_layer)
