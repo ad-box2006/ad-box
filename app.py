@@ -868,7 +868,7 @@ else:
                 
                 draw.ellipse([profile_x, profile_y, profile_x + avatar_diameter, profile_y + avatar_diameter], fill=(30, 41, 59))
                 
-                creator_handle_font_size = max(18, int(w * 0.037))
+                creator_handle_font_size = max(50, int(w * 0.40))
                 try: creator_handle_font = ImageFont.truetype("arialbd.ttf", creator_handle_font_size)
                 except:
                     try: creator_handle_font = ImageFont.truetype("arial.ttf", creator_handle_font_size)
@@ -911,11 +911,11 @@ else:
                     
                     draw.text((av_text_x, av_text_y), avatar_letter, fill=(255, 255, 255), font=avatar_font)
                 
-                metric_font_size = max(16, int(w * 0.029))
+                metric_font_size = max(50, int(w * 0.10))
                 try: metric_font = ImageFont.truetype("arial.ttf", metric_font_size)
                 except: metric_font = ImageFont.load_default()
                 
-                caption_font_size = max(20, int(w * 0.024))
+                caption_font_size = max(50, int(w * 0.20))
                 try: caption_font = ImageFont.truetype("arialbd.ttf", caption_font_size)
                 except:
                     try: caption_font = ImageFont.truetype("arial.ttf", caption_font_size)
@@ -985,12 +985,12 @@ else:
                 btn_y2 = btn_y1 + btn_h
                 cylinder_radius = btn_h // 2
                 draw.rounded_rectangle([btn_x1, btn_y1, btn_x2, btn_y2], fill="#1E73EB", radius=cylinder_radius)
-                cta_font_size = max(15, int(btn_h * 0.50))
+                cta_font_size = max(60, int(btn_h * 0.90))
                 try: cta_font = ImageFont.truetype("arialbd.ttf", cta_font_size)
                 except: cta_font = ImageFont.load_default()
                 cta_text_label = st.session_state.get("global_cta_text_field", "Shop Now")
                 try: cta_w = draw.textlength(cta_text_label, font=cta_font)
-                except: cta_w = len(cta_text_label) * int(cta_font_size * 0.55)
+                except: cta_w = len(cta_text_label) * int(cta_font_size * 0.90)
                 cta_inside_x = int(w / 2) - int(cta_w / 2)
                 cta_inside_y = btn_y1 + int((btn_h - cta_font_size) / 2) - 2
                 draw.text((cta_inside_x + 1, cta_inside_y + 1), cta_text_label, fill=(0, 0, 0), font=cta_font)
@@ -1000,7 +1000,7 @@ else:
                 banner_height = int(h * 0.10) if h > 0 else 140
                 draw = ImageDraw.Draw(processed_layer)
                 draw.rectangle([(0, h - banner_height), (w, h)], fill="#DC2626")
-                font_size_badge = max(20, int(banner_height * 0.42)) if h > w else max(20, int(w * 0.035))
+                font_size_badge = max(80, int(banner_height * 0.90)) if h > w else max(80, int(w * 0.90))
                 try: font_badge = ImageFont.truetype("arialbd.ttf", font_size_badge)
                 except: font_badge = ImageFont.load_default()
                       
@@ -1008,7 +1008,7 @@ else:
                     badge_text_width = draw.textlength(scarcity_text, font=font_badge)
                     badge_text_height = font_size_badge
                 except:
-                    badge_text_width = len(scarcity_text) * int(font_size_badge * 0.58)
+                    badge_text_width = len(scarcity_text) * int(font_size_badge * 0.90)
                     badge_text_height = font_size_badge
                 banner_center_x = int((w - badge_text_width) / 2)
                 banner_center_y = int(h - (banner_height / 2) - (badge_text_height / 2))
