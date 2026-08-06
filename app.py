@@ -189,6 +189,7 @@ def inject_login_styles():
         .stMain h1, stMain h2, stMain h3, stMain p, stMain label {
             color: #F8FAFC !important;
             font-family: 'Inter', sans-serif !important;
+            font-size: 18px !important;
         }
         h1, [data-testid="stMarkdownContainer"] h1 {
             background: linear-gradient(to right, #3B82F6, #8B5CF6) !important;
@@ -671,7 +672,8 @@ else:
             selected_hook_template = st.selectbox("Select your ad hook template", options=FREE_PRESET_HOOKS, key="ad_hook_selection_widget")
             active_product_text = product_name_val.strip() if product_name_val else "Product"
             final_processed_hook_text = selected_hook_template.format(product_name=active_product_text) if FREE_PRESET_HOOKS else "Explore catalog collections today."
-            st.session_state.headline_font_scale = st.slider("Headline font size scale", 30, 250, st.session_state.headline_font_scale)
+            
+            
             st.session_state.ga_brightness = st.slider("Base Image Brightness Scale", 0.5, 2.0, 1.0)
             st.session_state.ga_contrast = st.slider("Base Image Contrast Scale", 0.5, 2.0, 1.1)
             st.session_state.ga_blur = st.slider("Layer Blur Filter Intensity", 0, 10, 0)
@@ -832,8 +834,8 @@ else:
                         
             
             try:
-                font_headline = ImageFont.truetype("Arial.ttf", 36)
-                font_badge = ImageFont.truetype("Arial.ttf", 24)
+                font_headline = ImageFont.truetype("Arial.ttf", 48)
+                font_badge = ImageFont.truetype("Arial.ttf", 36)
             except:
                 font_headline = ImageFont.load_default()
                 font_badge = ImageFont.load_default()
@@ -867,7 +869,7 @@ else:
                 
                 draw.ellipse([profile_x, profile_y, profile_x + avatar_diameter, profile_y + avatar_diameter], fill=(30, 41, 59))
                 
-                creator_handle_font_size = max(50, int(w * 0.40))
+                creator_handle_font_size = max(50, int(w * 0.10))
                 try: creator_handle_font = ImageFont.truetype("arialbd.ttf", creator_handle_font_size)
                 except:
                     try: creator_handle_font = ImageFont.truetype("arial.ttf", creator_handle_font_size)
@@ -910,11 +912,11 @@ else:
                     
                     draw.text((av_text_x, av_text_y), avatar_letter, fill=(255, 255, 255), font=avatar_font)
                 
-                metric_font_size = max(50, int(w * 0.10))
+                metric_font_size = max(30, int(w * 0.06))
                 try: metric_font = ImageFont.truetype("arial.ttf", metric_font_size)
                 except: metric_font = ImageFont.load_default()
                 
-                caption_font_size = max(50, int(w * 0.20))
+                caption_font_size = max(30, int(w * 0.12))
                 try: caption_font = ImageFont.truetype("arialbd.ttf", caption_font_size)
                 except:
                     try: caption_font = ImageFont.truetype("arial.ttf", caption_font_size)
@@ -1000,7 +1002,7 @@ else:
                 banner_height = int(h * 0.10) if h > 0 else 140
                 draw = ImageDraw.Draw(processed_layer)
                 draw.rectangle([(0, h - banner_height), (w, h)], fill="#DC2626")
-                font_size_badge = max(19, int(banner_height * 0.035)) if h > w else max(19, int(w * 0.035))
+                font_size_badge = max(30, int(banner_height * 0.07)) if h > w else max(30, int(w * 0.06))
                 try: font_badge = ImageFont.truetype("arialbd.ttf", font_size_badge)
                 except: font_badge = ImageFont.load_default()
                       
