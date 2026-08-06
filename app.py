@@ -8,15 +8,6 @@ import textwrap
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageEnhance, ImageOps
 import time
 import base64
-img = Image.new("RGB", (400, 200), "black")
-draw = ImageDraw.Draw(img)
-try: font = ImageFont.truetype("arial.ttf", 72)
-except: font = ImageFont.load_default()
-draw.text((10, 50), "BIG TEXT", font=font, fill="white")
-buf = io.BytesIO()
-img.save(buf, format="PNG")
-buf.seek(0)
-st.image(buf)
 @st.cache_data(show_spinner=False)
 def get_global_logo_uri():
     if os.path.exists("logo.png"):
