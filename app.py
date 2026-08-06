@@ -804,45 +804,45 @@ else:
             is_tall_ratio = h > w
             is_square_ratio = abs(w - h) < (max(w, h) * 0.05)
             btn_w = int(w * 0.88)
-            btn_h = max(36, int(h * 0.052))
+            btn_h = max(50, int(h * 0.06))
             btn_x1 = int((w - btn_w) / 2)
             is_social_ui_active = apply_ig_ui or apply_tiktok_ui
             if scarcity_tag:
-                banner_height = int(h * 0.08) if h > 0 else 120
+                banner_height = int(h * 0.10) if h > 0 else 120
                 if is_social_ui_active:
-                    btn_y1 = h - banner_height - btn_h - 50
+                    btn_y1 = h - banner_height - btn_h - 40
                 else:
-                    btn_y1 = h - banner_height - btn_h - 12
-                #active_footer_ceiling = btn_y1
+                    btn_y1 = h - banner_height - btn_h - 20
+                active_footer_ceiling = btn_y1
             else:
                 banner_height = 0
                 if is_social_ui_active:
-                    btn_y1 = h - btn_h - 60
+                    btn_y1 = h - btn_h - 50
                 else:
-                    btn_y1 = h - btn_h - 60
+                    btn_y1 = h - btn_h - 50
             
             if ad_enable_cta:
                 active_footer_ceiling = btn_y1
             else:
                 if scarcity_tag:
-                    active_footer_ceiling = h - banner_height - 25
+                    active_footer_ceiling = h - banner_height - 20
                 else:
-                    active_footer_ceiling = h - 40 
+                    active_footer_ceiling = h - 30
                         
             scale_multiplier = max(w, h)  / 1080.0
             headline_font_size = int(42 * scale_multiplier)
-            badge_font_size = int (28 * scale_multiplier)
+            badge_font_size = int (32 * scale_multiplier)
             try:
-                font_headline = ImageFont.truetype("Arial.ttf", 36)
-                font_badge = ImageFont.truetype("Arial.ttf", 24)
+                font_headline = ImageFont.truetype("Arial.ttf", headline_font_size)
+                font_badge = ImageFont.truetype("Arial.ttf", badge_font_size)
             except:
                 font_headline = ImageFont.load_default()
                 font_badge = ImageFont.load_default()
                 
             if st.session_state.get("ga_headline", ""):
                 wrapped_lines = textwrap.wrap(st.session_state.ga_headline, width=40)
-                line_height = 40
-                banner_height = 40 + (len(wrapped_lines) * line_height)
+                line_height = int(headline_font_size * 1.2)
+                banner_height = 30 + (len(wrapped_lines) * line_height)
       
                 overlay_layer = Image.new('RGBA', processed_layer.size, (0,0,0,0))
                 overlay_draw = ImageDraw.Draw(overlay_layer)
@@ -850,9 +850,9 @@ else:
                 processed_layer = Image.alpha_composite(processed_layer.convert("RGBA"), overlay_layer).convert("RGB")
                  
                 draw = ImageDraw.Draw(processed_layer)
-                current_y = 30
+                current_y = 20
                 for line in wrapped_lines:
-                    draw.text((30, current_y), line, fill="#FFFFFF", font=font_headline)
+                    draw.text((20, current_y), line, fill="#FFFFFF", font=font_headline)
                     current_y += line_height
                 
                 
@@ -861,9 +861,9 @@ else:
                 draw = ImageDraw.Draw(processed_layer)
                 w, h = processed_layer.size
                 
-                profile_radius = max(16, int(w * 0.035))
-                profile_x = int(w * 0.018)
-                profile_y = int(h * 0.02)
+                profile_radius = max(24, int(w * 0.04))
+                profile_x = int(w * 0.03)
+                profile_y = int(h * 0.03)
                 avatar_diameter = profile_radius * 2
                 
                 draw.ellipse([profile_x, profile_y, profile_x + avatar_diameter, profile_y + avatar_diameter], fill=(30, 41, 59))
@@ -905,17 +905,17 @@ else:
                     try: avatar_font = ImageFont.truetype("arialbd.ttf", int(profile_radius * 1.1))
                     except: avatar_font = creator_handle_font
                     
-                    av_text_x = profile_x + int(profile_radius * 0.65)
-                    av_text_y = profile_y + int(profile_radius * 0.35)
+                    av_text_x = profile_x + int(profile_radius * 0.5)
+                    av_text_y = profile_y + int(profile_radius * 0.2)
                     draw.text((av_text_x + 1, av_text_y + 1), avatar_letter, fill=(0, 0, 0), font=avatar_font)
                     
                     draw.text((av_text_x, av_text_y), avatar_letter, fill=(255, 255, 255), font=avatar_font)
                 
-                metric_font_size = max(16, int(w * 0.026))
+                metric_font_size = max(16, int(w * 0.029))
                 try: metric_font = ImageFont.truetype("arial.ttf", metric_font_size)
                 except: metric_font = ImageFont.load_default()
                 
-                caption_font_size = max(18, int(w * 0.028))
+                caption_font_size = max(20, int(w * 0.024))
                 try: caption_font = ImageFont.truetype("arialbd.ttf", caption_font_size)
                 except:
                     try: caption_font = ImageFont.truetype("arial.ttf", caption_font_size)
@@ -931,13 +931,13 @@ else:
                 
                 wrapped_caption_lines = textwrap.wrap(final_processed_hook_text, width=max_line_width)
                 total_caption_lines_count = len(wrapped_caption_lines)
-                caption_line_height = int(caption_font_size * 1.5)
+                caption_line_height = int(caption_font_size * 1.8)
                 caption_block_height = total_caption_lines_count * caption_line_height
                 likes_row_height = 45 + int(metric_font_size * 1.25)
                 current_caption_y = active_footer_ceiling - caption_block_height - likes_row_height - 45
                 draw.text((text_margin_x, current_caption_y), f"{display_handle} ", fill="#FFFFFF", font=caption_font)
                 
-                verified_icon = get_cached_social_icon("verified_icon.png", int(caption_font_size * 1.3))
+                verified_icon = get_cached_social_icon("verified_icon.png", int(caption_font_size * 1.2))
                 if verified_icon:
                     bbox = draw.textbbox((0, 0), f"{display_handle} ", font=caption_font)
                     username_width = bbox[2] - bbox[0] 
@@ -985,7 +985,7 @@ else:
                 btn_y2 = btn_y1 + btn_h
                 cylinder_radius = btn_h // 2
                 draw.rounded_rectangle([btn_x1, btn_y1, btn_x2, btn_y2], fill="#1E73EB", radius=cylinder_radius)
-                cta_font_size = max(18, int(btn_h * 0.45))
+                cta_font_size = max(19, int(btn_h * 0.48))
                 try: cta_font = ImageFont.truetype("arialbd.ttf", cta_font_size)
                 except: cta_font = ImageFont.load_default()
                 cta_text_label = st.session_state.get("global_cta_text_field", "Shop Now")
@@ -1000,7 +1000,7 @@ else:
                 banner_height = int(h * 0.10) if h > 0 else 140
                 draw = ImageDraw.Draw(processed_layer)
                 draw.rectangle([(0, h - banner_height), (w, h)], fill="#DC2626")
-                font_size_badge = max(32, int(banner_height * 0.45)) if h > w else max(32, int(w * 0.045))
+                font_size_badge = max(38, int(banner_height * 0.45)) if h > w else max(38, int(w * 0.045))
                 try: font_badge = ImageFont.truetype("arialbd.ttf", font_size_badge)
                 except: font_badge = ImageFont.load_default()
                       
@@ -1008,7 +1008,7 @@ else:
                     badge_text_width = draw.textlength(scarcity_text, font=font_badge)
                     badge_text_height = font_size_badge
                 except:
-                    badge_text_width = len(scarcity_text) * int(font_size_badge * 0.55)
+                    badge_text_width = len(scarcity_text) * int(font_size_badge * 0.58)
                     badge_text_height = font_size_badge
                 banner_center_x = int((w - badge_text_width) / 2)
                 banner_center_y = int(h - (banner_height / 2) - (badge_text_height / 2))
@@ -1016,8 +1016,8 @@ else:
                 draw.text((banner_center_x, banner_center_y), scarcity_text, fill="#FFFFFF", font=font_badge)
             
             if apply_ig_ui:
-                f_size = profile_font_size if 'profile_font_size' in locals() else max(14, int(w * 0.03))   
-                sponsor_font_size = max(11, int(f_size * 0.8))
+                f_size = profile_font_size if 'profile_font_size' in locals() else max(18, int(w * 0.03))   
+                sponsor_font_size = max(14, int(f_size * 0.8))
                 try: sponsor_font = ImageFont.truetype("arial.ttf", sponsor_font_size)
                 except: sponsor_font = ImageFont.load_default()
                 profile_radius_calc = max(16, int(w * 0.035))
@@ -1038,12 +1038,12 @@ else:
                 badge_overlay = Image.new("RGBA", processed_layer.size, (0, 0, 0, 0))
                 badge_draw = ImageDraw.Draw(badge_overlay)
                 badge_draw.rounded_rectangle([ad_corner_x1, ad_corner_y1, ad_corner_x1 + ad_box_w, ad_corner_y1 + ad_box_h], fill=(15, 23, 42, 90), radius=4)
-                ad_label_font_size = max(28, int(w * 0.045))
+                ad_label_font_size = max(38, int(w * 0.045))
                 try: ad_label_font = ImageFont.truetype("arialbd.ttf", ad_label_font_size)
                 except: ad_label_font = ImageFont.load_default() 
              
                 try: ad_text_w = draw.textlength("Ad", font=ad_label_font)
-                except: ad_text_w = len("Ad") *  (ad_label_font_size * 0.15)
+                except: ad_text_w = len("Ad") *  (ad_label_font_size * 0.20)
                 ad_txt_x = ad_corner_x1 + int((ad_box_w - ad_text_w) / 2)
                 ad_txt_y = ad_corner_y1 + int((ad_box_h - ad_label_font_size) / 2) - 2
                 badge_draw.text((ad_txt_x, ad_txt_y), "Ad", fill=(255, 255, 255, 255), font=ad_label_font) 
@@ -1055,7 +1055,7 @@ else:
                 w, h = processed_layer.size
                 circle_radius = int((w + h) * 0.055) if w > 0 else 80
                 circle_diameter = circle_radius * 2
-                font_size_sticker = max(26, int(circle_radius * 0.38))
+                font_size_sticker = max(29, int(circle_radius * 0.38))
                 try: font_sticker = ImageFont.truetype("arialbd.ttf", font_size_sticker)
                 except:
                     try: font_sticker = ImageFont.truetype("arial.ttf", font_size_sticker)
@@ -1126,7 +1126,7 @@ else:
                 is_square = abs(w - h) < (max(w, h) * 0.05)
                 base_start_y = int(h * 0.35 if is_square else h * 0.42)
                 icon_spacing = int(h * 0.11 if is_square else h * 0.13)
-          #      disc_height_scale = 1.0
+                disc_height_scale = 1.0
                 icon_center_x = int(w * 0.94)
                 
                 heart_count = st.session_state.get("custom_heart", "50.2M")
