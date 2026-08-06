@@ -985,7 +985,7 @@ else:
                 btn_y2 = btn_y1 + btn_h
                 cylinder_radius = btn_h // 2
                 draw.rounded_rectangle([btn_x1, btn_y1, btn_x2, btn_y2], fill="#1E73EB", radius=cylinder_radius)
-                cta_font_size = max(19, int(btn_h * 0.48))
+                cta_font_size = max(15, int(btn_h * 0.50))
                 try: cta_font = ImageFont.truetype("arialbd.ttf", cta_font_size)
                 except: cta_font = ImageFont.load_default()
                 cta_text_label = st.session_state.get("global_cta_text_field", "Shop Now")
@@ -1000,7 +1000,7 @@ else:
                 banner_height = int(h * 0.10) if h > 0 else 140
                 draw = ImageDraw.Draw(processed_layer)
                 draw.rectangle([(0, h - banner_height), (w, h)], fill="#DC2626")
-                font_size_badge = max(38, int(banner_height * 0.45)) if h > w else max(38, int(w * 0.045))
+                font_size_badge = max(20, int(banner_height * 0.42)) if h > w else max(20, int(w * 0.035))
                 try: font_badge = ImageFont.truetype("arialbd.ttf", font_size_badge)
                 except: font_badge = ImageFont.load_default()
                       
@@ -1038,12 +1038,12 @@ else:
                 badge_overlay = Image.new("RGBA", processed_layer.size, (0, 0, 0, 0))
                 badge_draw = ImageDraw.Draw(badge_overlay)
                 badge_draw.rounded_rectangle([ad_corner_x1, ad_corner_y1, ad_corner_x1 + ad_box_w, ad_corner_y1 + ad_box_h], fill=(15, 23, 42, 90), radius=4)
-                ad_label_font_size = max(38, int(w * 0.045))
+                ad_label_font_size = max(80, int(w * 0.045))
                 try: ad_label_font = ImageFont.truetype("arialbd.ttf", ad_label_font_size)
                 except: ad_label_font = ImageFont.load_default() 
              
                 try: ad_text_w = draw.textlength("Ad", font=ad_label_font)
-                except: ad_text_w = len("Ad") *  (ad_label_font_size * 0.20)
+                except: ad_text_w = len("Ad") *  (ad_label_font_size * 0.100)
                 ad_txt_x = ad_corner_x1 + int((ad_box_w - ad_text_w) / 2)
                 ad_txt_y = ad_corner_y1 + int((ad_box_h - ad_label_font_size) / 2) - 2
                 badge_draw.text((ad_txt_x, ad_txt_y), "Ad", fill=(255, 255, 255, 255), font=ad_label_font) 
