@@ -18,7 +18,7 @@ CACHED_LOGO_URI = get_global_logo_uri()
 if "show_splash" not in st.session_state:
     st.session_state.show_splash = True
     st.session_state.splash_start_time = time.time()
-SPLASH_DURATION = 3
+SPLASH_DURATION = 2
 def show_splash():
     logo_src = CACHED_LOGO_URI if CACHED_LOGO_URI else ""
      
@@ -868,7 +868,7 @@ else:
                 
                 draw.ellipse([profile_x, profile_y, profile_x + avatar_diameter, profile_y + avatar_diameter], fill=(30, 41, 59))
                 
-                creator_handle_font_size = max(14, int(w * 0.037))
+                creator_handle_font_size = max(18, int(w * 0.037))
                 try: creator_handle_font = ImageFont.truetype("arialbd.ttf", creator_handle_font_size)
                 except:
                     try: creator_handle_font = ImageFont.truetype("arial.ttf", creator_handle_font_size)
@@ -911,11 +911,11 @@ else:
                     
                     draw.text((av_text_x, av_text_y), avatar_letter, fill=(255, 255, 255), font=avatar_font)
                 
-                metric_font_size = max(12, int(w * 0.026))
+                metric_font_size = max(16, int(w * 0.026))
                 try: metric_font = ImageFont.truetype("arial.ttf", metric_font_size)
                 except: metric_font = ImageFont.load_default()
                 
-                caption_font_size = max(14, int(w * 0.028))
+                caption_font_size = max(18, int(w * 0.028))
                 try: caption_font = ImageFont.truetype("arialbd.ttf", caption_font_size)
                 except:
                     try: caption_font = ImageFont.truetype("arial.ttf", caption_font_size)
@@ -954,7 +954,7 @@ else:
                 try: likes_font = ImageFont.truetype("arial.ttf", metric_font_size)
                 except: likes_font = creator_handle_font
                 draw.text((text_margin_x, current_caption_y), "1,506 likes", fill="#0095F6", font=likes_font)      
-                icon_size = max(14, int(w * 0.040))
+                icon_size = max(18, int(w * 0.040))
                 icon_y = active_footer_ceiling - 50 if (ad_enable_cta or apply_ig_ui) else h - 50
                 target_icon_y = active_footer_ceiling - 70
                 lx = int(w * 0.05)
@@ -985,7 +985,7 @@ else:
                 btn_y2 = btn_y1 + btn_h
                 cylinder_radius = btn_h // 2
                 draw.rounded_rectangle([btn_x1, btn_y1, btn_x2, btn_y2], fill="#1E73EB", radius=cylinder_radius)
-                cta_font_size = max(15, int(btn_h * 0.50))
+                cta_font_size = max(18, int(btn_h * 0.45))
                 try: cta_font = ImageFont.truetype("arialbd.ttf", cta_font_size)
                 except: cta_font = ImageFont.load_default()
                 cta_text_label = st.session_state.get("global_cta_text_field", "Shop Now")
@@ -997,10 +997,10 @@ else:
                 draw.text((cta_inside_x, cta_inside_y), cta_text_label, fill="#FFFFFF", font=cta_font)       
             if scarcity_tag:
                 w, h = processed_layer.size
-                banner_height = int(h * 0.08) if h > 0 else 120
+                banner_height = int(h * 0.10) if h > 0 else 140
                 draw = ImageDraw.Draw(processed_layer)
                 draw.rectangle([(0, h - banner_height), (w, h)], fill="#DC2626")
-                font_size_badge = max(20, int(banner_height * 0.42)) if h > w else max(20, int(w * 0.035))
+                font_size_badge = max(32, int(banner_height * 0.45)) if h > w else max(32, int(w * 0.045))
                 try: font_badge = ImageFont.truetype("arialbd.ttf", font_size_badge)
                 except: font_badge = ImageFont.load_default()
                       
@@ -1030,22 +1030,22 @@ else:
                 draw.text((sponsor_text_x + 2, sponsor_text_y + 2), "Sponsored", fill=(0, 0, 0), font=sponsor_font)
                 draw.text((sponsor_text_x, sponsor_text_y), "Sponsored", fill=(178, 178, 178), font=sponsor_font)
             else:
-                ad_box_w = max(38, int(w * 0.065))
-                ad_box_h = max(18, int(h * 0.038))
+                ad_box_w = max(110, int(w * 0.12))
+                ad_box_h = max(50, int(h * 0.06))
            
                 ad_corner_x1 = int(w * 0.04)
                 ad_corner_y1 = int(h * 0.04)
                 badge_overlay = Image.new("RGBA", processed_layer.size, (0, 0, 0, 0))
                 badge_draw = ImageDraw.Draw(badge_overlay)
                 badge_draw.rounded_rectangle([ad_corner_x1, ad_corner_y1, ad_corner_x1 + ad_box_w, ad_corner_y1 + ad_box_h], fill=(15, 23, 42, 90), radius=4)
-                ad_label_font_size = max(11, int(w * 0.024))
+                ad_label_font_size = max(28, int(w * 0.045))
                 try: ad_label_font = ImageFont.truetype("arialbd.ttf", ad_label_font_size)
                 except: ad_label_font = ImageFont.load_default() 
              
                 try: ad_text_w = draw.textlength("Ad", font=ad_label_font)
                 except: ad_text_w = len("Ad") *  (ad_label_font_size * 0.5)
                 ad_txt_x = ad_corner_x1 + int((ad_box_w - ad_text_w) / 2)
-                ad_txt_y = ad_corner_y1 + int((ad_box_h - ad_label_font_size) / 2) - 1
+                ad_txt_y = ad_corner_y1 + int((ad_box_h - ad_label_font_size) / 2) - 2
                 badge_draw.text((ad_txt_x, ad_txt_y), "Ad", fill=(255, 255, 255, 255), font=ad_label_font) 
                 processed_layer.paste(badge_overlay, (0, 0), mask=badge_overlay)
                 draw = ImageDraw.Draw(processed_layer)
@@ -1055,7 +1055,7 @@ else:
                 w, h = processed_layer.size
                 circle_radius = int((w + h) * 0.055) if w > 0 else 80
                 circle_diameter = circle_radius * 2
-                font_size_sticker = max(22, int(circle_radius * 0.38))
+                font_size_sticker = max(26, int(circle_radius * 0.38))
                 try: font_sticker = ImageFont.truetype("arialbd.ttf", font_size_sticker)
                 except:
                     try: font_sticker = ImageFont.truetype("arial.ttf", font_size_sticker)
@@ -1112,9 +1112,9 @@ else:
                 tiktok_draw = ImageDraw.Draw(processed_layer)
                 w, h = processed_layer.size
                 scale_factor = (w + h) / 2
-                ui_font_size = int(scale_factor * 0.027) if scale_factor > 0 else 27
-                ui_font_size = max(ui_font_size, 16)
-                icon_font_size = int(scale_factor * 0.029) if scale_factor > 0 else 29
+                ui_font_size = int(scale_factor * 0.032) if scale_factor > 0 else 32
+                ui_font_size = max(ui_font_size, 20)
+                icon_font_size = int(scale_factor * 0.032) if scale_factor > 0 else 32
                 
                 try:
                     ui_font = ImageFont.truetype("arial.ttf", ui_font_size)
@@ -1126,7 +1126,7 @@ else:
                 is_square = abs(w - h) < (max(w, h) * 0.05)
                 base_start_y = int(h * 0.35 if is_square else h * 0.42)
                 icon_spacing = int(h * 0.11 if is_square else h * 0.13)
-                disc_height_scale = 1.0
+          #      disc_height_scale = 1.0
                 icon_center_x = int(w * 0.94)
                 
                 heart_count = st.session_state.get("custom_heart", "50.2M")
