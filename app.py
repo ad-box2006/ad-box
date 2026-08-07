@@ -1010,7 +1010,7 @@ else:
                 draw.rounded_rectangle([btn_x1, btn_y1, btn_x2, btn_y2], fill="#1E73EB", radius=cylinder_radius)
                 cta_font_size = max(72, int(btn_h * 1.0))
                 try:
-                    cta_font = ImageFont.truetype("C:/Users/albertina/Desktop/mystudio/ARIAL.TTF", 120)
+                    cta_font = ImageFont.truetype("C:/Users/albertina/Desktop/mystudio/ARIAL.TTF", cta_font_size)
                     print("Font loaded successfully")
                 except Exception as e:
                     cta_font = ImageFont.load_default()
