@@ -834,8 +834,8 @@ else:
                         
             
             try:
-                font_headline = ImageFont.truetype("Arial.ttf", 48)
-                font_badge = ImageFont.truetype("Arial.ttf", 36)
+                font_path = ImageFont.truetype("fonts", "arial.ttf")
+                font_headline = ImageFont.truetype(font_path, 48)
             except:
                 font_headline = ImageFont.load_default()
                 font_badge = ImageFont.load_default()
