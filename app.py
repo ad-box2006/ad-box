@@ -1043,7 +1043,7 @@ else:
                 badge_overlay = Image.new("RGBA", processed_layer.size, (0, 0, 0, 0))
                 badge_draw = ImageDraw.Draw(badge_overlay)
                 badge_draw.rounded_rectangle([ad_corner_x1, ad_corner_y1, ad_corner_x1 + ad_box_w, ad_corner_y1 + ad_box_h], fill=(15, 23, 42, 90), radius=4)
-                ad_label_font_size = max(38, int(w * 0.045))
+                ad_label_font_size = max(60, int(w * 0.0100))
                 try: ad_label_font = ImageFont.truetype(font_bold_path, ad_label_font_size)
                 except: ad_label_font = ImageFont.load_default() 
              
@@ -1201,7 +1201,7 @@ else:
                 active_footer_ceiling = h - 120 if "active_footer_ceiling" not in locals() else active_footer_ceiling
                 lower_base_y = active_footer_ceiling - int(ui_font_size * (total_caption_lines_count + 1.8)) - 40
                
-                tiktok_draw.text((text_margin_x, lower_base_y), active_handle, fill="#FFFFFF", font=ImageFont.truetype(font_path_regular, int(ui_font_size * 1.3)))
+                tiktok_draw.text((text_margin_x, lower_base_y), active_handle, fill="#FFFFFF", font=ImageFont.truetype(font_path_regular, int(ui_font_size * 1.40)))
                 verified_icon_size = int(ui_font_size * 1.6)
                 verified_icon = get_cached_social_icon("verified_icon (2).png", verified_icon_size) if "get_cached_social_icon"  in globals() else None
                 if verified_icon:
