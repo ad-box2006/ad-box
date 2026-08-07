@@ -1010,7 +1010,7 @@ else:
                 draw.rounded_rectangle([btn_x1, btn_y1, btn_x2, btn_y2], fill="#1E73EB", radius=cylinder_radius)
                 cta_font_size = max(72, int(btn_h * 1.0))
                 try:
-                    cta_font = ImageFont.truetype("arial.ttf", 72)
+                    cta_font = ImageFont.truetype("ARIALBD 1.TTF", 36)
                     print("Font loaded successfully")
                 except Exception as e:
                     cta_font = ImageFont.load_default()
