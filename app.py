@@ -1050,7 +1050,7 @@ else:
                 try: ad_text_w = draw.textlength("Ad", font=ad_label_font)
                 except: ad_text_w = len("Ad") *  (ad_label_font_size * 0.10)
                 ad_txt_x = ad_corner_x1 + int((ad_box_w - ad_text_w) / 2)
-                ad_txt_y = ad_corner_y1 + int((ad_box_h - ad_label_font_size) / 2) - 1
+                ad_txt_y = ad_corner_y1 + int((ad_box_h - ad_label_font_size) / 2) * 1
                 badge_draw.text((ad_txt_x, ad_txt_y), "Ad", fill=(255, 255, 255, 255), font=ad_label_font) 
                 processed_layer.paste(badge_overlay, (0, 0), mask=badge_overlay)
                 draw = ImageDraw.Draw(processed_layer)
