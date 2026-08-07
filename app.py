@@ -1043,9 +1043,12 @@ else:
                 badge_overlay = Image.new("RGBA", processed_layer.size, (0, 0, 0, 0))
                 badge_draw = ImageDraw.Draw(badge_overlay)
                 badge_draw.rounded_rectangle([ad_corner_x1, ad_corner_y1, ad_corner_x1 + ad_box_w, ad_corner_y1 + ad_box_h], fill=(15, 23, 42, 90), radius=4)
-                ad_label_font_size = max(60, int(w * 0.09))
+                ad_label_font_size = 100
                 try: ad_label_font = ImageFont.truetype(font_bold_path, ad_label_font_size)
-                except: ad_label_font = ImageFont.load_default() 
+                  
+                except Exception as e:
+                    print(f"Failed to load font: {e}")
+                    ad_label_font = ImageFont.load_default() 
              
                 try: ad_text_w = draw.textlength("Ad", font=ad_label_font)
                 except: ad_text_w = len("Ad") *  (ad_label_font_size * 0.9)
