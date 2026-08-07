@@ -1013,7 +1013,7 @@ else:
                     badge_text_width = draw.textlength(scarcity_text, font=font_badge)
                     badge_text_height = font_size_badge
                 except:
-                    badge_text_width = len(scarcity_text) * int(font_size_badge * 0.55)
+                    badge_text_width = len(scarcity_text) * int(font_size_badge * 0.450)
                     badge_text_height = font_size_badge
                 banner_center_x = int((w - badge_text_width) / 2)
                 banner_center_y = int(h - (banner_height / 2) - (badge_text_height / 2))
@@ -1048,9 +1048,9 @@ else:
                 except: ad_label_font = ImageFont.load_default() 
              
                 try: ad_text_w = draw.textlength("Ad", font=ad_label_font)
-                except: ad_text_w = len("Ad") *  (ad_label_font_size * 0.500)
+                except: ad_text_w = len("Ad") *  (ad_label_font_size * 2.500)
                 ad_txt_x = ad_corner_x1 + int((ad_box_w - ad_text_w) / 2)
-                ad_txt_y = ad_corner_y1 + int((ad_box_h - ad_label_font_size) / 10) - 10
+                ad_txt_y = ad_corner_y1 + int((ad_box_h - ad_label_font_size) / 10) - 2
                 badge_draw.text((ad_txt_x, ad_txt_y), "Ad", fill=(255, 255, 255, 255), font=ad_label_font) 
                 processed_layer.paste(badge_overlay, (0, 0), mask=badge_overlay)
                 draw = ImageDraw.Draw(processed_layer)
