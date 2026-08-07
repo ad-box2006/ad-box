@@ -8,21 +8,7 @@ import textwrap
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageEnhance, ImageOps
 import time
 import base64
-img = Image.new("RGBA", (400, 200), (0, 0, 0, 255))
-draw = ImageDraw.Draw(img)
-try:
-    font = ImageFont.truetype("fonts/arialbd.ttf", 100)
-except:
-    font = ImageFont.load_default()
-text = "Ad"
-bbox = draw.textbbox((0, 0), text, font=font)
-text_w = bbox[2] - bbox[0]
-text_h = bbox[3] - bbox[1]
-x = (img.width - text_w) // 2
-y = (img.height - text_h) // 2
-draw.text((x, y), text, font=font, fill=(255, 255, 255, 255))
-img.save("test_ad_text.png")
-img.show()
+
 @st.cache_data(show_spinner=False)
 def get_global_logo_uri():
     if os.path.exists("logo.png"):
@@ -846,16 +832,7 @@ else:
                     active_footer_ceiling = h - banner_height - 20
                 else:
                     active_footer_ceiling = h - 30
-                        
-            
-            try:
-                font_path = os.path.join("fonts", "arial.ttf")
-                font_headline = ImageFont.truetype(font_path, 72)
-            except Exception as e:
-                print(f"Error loading font: {e}")
-                font_headline = ImageFont.load_default()
-                font_badge = ImageFont.load_default()
-                
+             
             if st.session_state.get("ga_headline", ""):
                 wrapped_lines = textwrap.wrap(st.session_state.ga_headline, width=40)
                 line_height = int(headline_font_size * 1.2) if "headline_font_size" in locals() else 40
@@ -871,9 +848,7 @@ else:
                 for line in wrapped_lines:
                     draw.text((20, current_y), line, fill="#FFFFFF", font=font_headline)
                     current_y += line_height
-                
-            font_path_regular = os.path.join("fonts", "arial.ttf")    
-            font_path_bold = os.path.join("fonts", "arial.ttf")        
+             
             if apply_ig_ui:
                 draw = ImageDraw.Draw(processed_layer)
                 w, h = processed_layer.size
@@ -886,11 +861,9 @@ else:
                 draw.ellipse([profile_x, profile_y, profile_x + avatar_diameter, profile_y + avatar_diameter], fill=(30, 41, 59))
                 creator_handle_font_size = max(46, int(w * 0.12))
                 try:
-                    font_bold_path = os.path.join("fonts", "arialbd.ttf")
-                    font_regular_path = os.path.join("fonts", "arial.ttf")
-                    creator_handle_font = ImageFont.truetype(font_bold_path, creator_handle_font_size)
+                    creator_handle_font = ImageFont.truetype("arial.ttf", creator_handle_font_size)
                 except:
-                    try: creator_handle_font = ImageFont.truetype(font_regular_path, creator_handle_font_size)
+                    try: creator_handle_font = ImageFont.truetype("arial.ttf", creator_handle_font_size)
                     except: creator_handle_font = ImageFont.load_default()
                     
                     
@@ -921,7 +894,7 @@ else:
                         
                 if profile_file is None:
                     avatar_letter = display_handle[1].upper() if len(display_handle) > 1 else "C"
-                    try: avatar_font = ImageFont.truetype(font_bold_path, int(profile_radius * 1.1))
+                    try: avatar_font = ImageFont.truetype("arialbd.ttf", int(profile_radius * 1.1))
                     except: avatar_font = creator_handle_font
                     
                     av_text_x = profile_x + int(profile_radius * 0.5)
@@ -931,13 +904,13 @@ else:
                     draw.text((av_text_x, av_text_y), avatar_letter, fill=(255, 255, 255), font=avatar_font)
                 
                 metric_font_size = max(30, int(w * 0.06))
-                try: metric_font = ImageFont.truetype(font_regular_path, metric_font_size)
+                try: metric_font = ImageFont.truetype("arial.ttf", metric_font_size)
                 except: metric_font = ImageFont.load_default()
                 
                 caption_font_size = max(30, int(w * 0.12))
-                try: caption_font = ImageFont.truetype(font_bold_path, caption_font_size)
+                try: caption_font = ImageFont.truetype("arialbd.ttf", caption_font_size)
                 except:
-                    try: caption_font = ImageFont.truetype(font_regular_path, caption_font_size)
+                    try: caption_font = ImageFont.truetype("arial.ttf", caption_font_size)
                     except: caption_font = creator_handle_font
                     
                 text_margin_x = int(w * 0.04) 
@@ -945,8 +918,8 @@ else:
                 custom_hook = final_processed_hook_text if "final_processed_hook_text" in locals() else ""
                 usable_pixel_width = int(w * 0.80)
                 estimated_char_pixel_width = int(caption_font_size * 0.55)
-                max_line_width = int(usable_pixel_width / estimated_char_pixel_width)
-                max_line_width = max(25, max_line_width)
+                max_line_width = max(25, int(usable_pixel_width / estimated_char_pixel_width))
+              #  max_line_width = max(25, max_line_width)
                 
                 wrapped_caption_lines = textwrap.wrap(final_processed_hook_text, width=max_line_width)
                 total_caption_lines_count = len(wrapped_caption_lines)
@@ -1038,7 +1011,7 @@ else:
             if apply_ig_ui:
                 f_size = profile_font_size if 'profile_font_size' in locals() else max(18, int(w * 0.03))   
                 sponsor_font_size = max(14, int(f_size * 0.8))
-                try: sponsor_font = ImageFont.truetype(font_regular_path, sponsor_font_size)
+                try: sponsor_font = ImageFont.truetype("arial.ttf", sponsor_font_size)
                 except: sponsor_font = ImageFont.load_default()
                 profile_radius_calc = max(16, int(w * 0.035))
                 profile_avatar_diameter = profile_radius_calc * 2
@@ -1050,8 +1023,8 @@ else:
                 draw.text((sponsor_text_x + 2, sponsor_text_y + 2), "Sponsored", fill=(0, 0, 0), font=sponsor_font)
                 draw.text((sponsor_text_x, sponsor_text_y), "Sponsored", fill=(178, 178, 178), font=sponsor_font)
             else:
-                ad_box_w = max(180, int(w * 0.29))
-                ad_box_h = max(100, int(h * 0.12))
+                ad_box_w = max(108, int(w * 0.012))
+                ad_box_h = max(50, int(h * 0.06))
            
                 ad_corner_x1 = int(w * 0.04)
                 ad_corner_y1 = int(h * 0.04)
@@ -1061,8 +1034,8 @@ else:
                 ad_label_font_size = 100
                 try: ad_label_font = ImageFont.truetype("arial.tff", ad_label_font_size)
                   
-                except Exception as e:
-                    print(f"Failed to load font: {e}")
+                except:
+                   
                     ad_label_font = ImageFont.load_default() 
              
                 try: ad_text_w = draw.textlength("Ad", font=ad_label_font)
@@ -1079,9 +1052,9 @@ else:
                 circle_radius = int((w + h) * 0.055) if w > 0 else 80
                 circle_diameter = circle_radius * 2
                 font_size_sticker = max(29, int(circle_radius * 0.38))
-                try: font_sticker = ImageFont.truetype(font_bold_path, font_size_sticker)
+                try: font_sticker = ImageFont.truetype("arialbd.ttf", font_size_sticker)
                 except:
-                    try: font_sticker = ImageFont.truetype(font_regular_path, font_size_sticker)
+                    try: font_sticker = ImageFont.truetype("arial.ttf", font_size_sticker)
                     except: font_sticker = badge_draw.load_default()
                 if "Urgent Flash" in sticker_theme:
                     bg_color, txt_color = "#F59E0B", "#060B13"
@@ -1140,9 +1113,8 @@ else:
                 icon_font_size = int(scale_factor * 0.05)
                 icon_font_size = max(icon_font_size, 24)
                 try:
-                    font_path_regular = os.path.join("fonts", "arial.ttf")
-                    ui_font = ImageFont.truetype(font_path_regular, ui_font_size)
-                    ui_font_bold = ImageFont.truetype(font_path_regular, ui_font_size)
+                    ui_font = ImageFont.truetype("arial.ttf", ui_font_size)
+                    ui_font_bold = ImageFont.truetype("arial.ttf", ui_font_size)
                 except: 
                     ui_font = ImageFont.load_default() 
                     ui_font_bold = ImageFont.load_default()
@@ -1219,11 +1191,11 @@ else:
                 active_footer_ceiling = h - 120 if "active_footer_ceiling" not in locals() else active_footer_ceiling
                 lower_base_y = active_footer_ceiling - int(ui_font_size * (total_caption_lines_count + 1.8)) - 40
                
-                tiktok_draw.text((text_margin_x, lower_base_y), active_handle, fill="#FFFFFF", font=ImageFont.truetype(font_path_regular, int(ui_font_size * 1.40)))
+                tiktok_draw.text((text_margin_x, lower_base_y), active_handle, fill="#FFFFFF", font=ImageFont.truetype("arial.ttf", int(ui_font_size * 1.40)))
                 verified_icon_size = int(ui_font_size * 1.6)
                 verified_icon = get_cached_social_icon("verified_icon (2).png", verified_icon_size) if "get_cached_social_icon"  in globals() else None
                 if verified_icon:
-                    bbox = tiktok_draw.textbbox((0, 0), active_handle, font=ImageFont.truetype(font_path_regular, int(ui_font_size * 1.3)))
+                    bbox = tiktok_draw.textbbox((0, 0), active_handle, font=ImageFont.truetype("arial.ttf", int(ui_font_size * 1.3)))
                     username_width = bbox[2] - bbox[0] 
                     badge_x = text_margin_x + username_width + 5
                     badge_y = lower_base_y + (ui_font_size - verified_icon.height) // 2
@@ -1232,7 +1204,7 @@ else:
                 current_caption_y = lower_base_y + int(ui_font_size * 1.70)
                 for line_item in wrapped_caption_lines:
                     
-                    tiktok_draw.text((text_margin_x, current_caption_y), line_item, fill="#FFFFFF", font=ImageFont.truetype(font_path_regular, int(ui_font_size * 1.2)))
+                    tiktok_draw.text((text_margin_x, current_caption_y), line_item, fill="#FFFFFF", font=ImageFont.truetype("arial.ttf", int(ui_font_size * 1.2)))
                     current_caption_y += int(ui_font_size * 1.20)
                 niche_val = niche if "niche" in locals() else "Standard"
                 if niche_val == "Problem/Solution":
