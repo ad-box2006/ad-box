@@ -857,8 +857,8 @@ else:
                     draw.text((20, current_y), line, fill="#FFFFFF", font=font_headline)
                     current_y += line_height
                 
-                
-                    
+            font_path_regular = os.path.join("fonts", "arial.ttf")    
+            font_path_bold = os.path.join("fonts", "arial.ttf")        
             if apply_ig_ui:
                 draw = ImageDraw.Draw(processed_layer)
                 w, h = processed_layer.size
@@ -869,7 +869,7 @@ else:
                 avatar_diameter = profile_radius * 2
                 
                 draw.ellipse([profile_x, profile_y, profile_x + avatar_diameter, profile_y + avatar_diameter], fill=(30, 41, 59))
-                
+                creator_handle_font_size = max(46, int(w * 0.12))
                 try:
                     font_bold_path = os.path.join("fonts", "arialbd.ttf")
                     font_regular_path = os.path.join("fonts", "arial.ttf")
@@ -1043,7 +1043,7 @@ else:
                 badge_overlay = Image.new("RGBA", processed_layer.size, (0, 0, 0, 0))
                 badge_draw = ImageDraw.Draw(badge_overlay)
                 badge_draw.rounded_rectangle([ad_corner_x1, ad_corner_y1, ad_corner_x1 + ad_box_w, ad_corner_y1 + ad_box_h], fill=(15, 23, 42, 90), radius=4)
-                ad_label_font_size = max(60, int(w * 0.0100))
+                ad_label_font_size = max(30, int(w * 0.045))
                 try: ad_label_font = ImageFont.truetype(font_bold_path, ad_label_font_size)
                 except: ad_label_font = ImageFont.load_default() 
              
@@ -1117,10 +1117,10 @@ else:
                 tiktok_draw = ImageDraw.Draw(processed_layer)
                 w, h = processed_layer.size
                 scale_factor = (w + h) / 2
-                ui_font_size = int(scale_factor * 0.032) if scale_factor > 0 else 32
-                ui_font_size = max(ui_font_size, 20)
-                icon_font_size = int(scale_factor * 0.032) if scale_factor > 0 else 32
-                
+                ui_font_size = int(scale_factor * 0.05)
+                ui_font_size = max(ui_font_size, 24)
+                icon_font_size = int(scale_factor * 0.05)
+                icon_font_size = max(icon_font_size, 24)
                 try:
                     font_path_regular = os.path.join("fonts", "arial.ttf")
                     ui_font = ImageFont.truetype(font_path_regular, ui_font_size)
