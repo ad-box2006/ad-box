@@ -1008,14 +1008,22 @@ else:
                 btn_y2 = btn_y1 + btn_h
                 cylinder_radius = btn_h // 2
                 draw.rounded_rectangle([btn_x1, btn_y1, btn_x2, btn_y2], fill="#1E73EB", radius=cylinder_radius)
-                cta_font_size = max(15, int(btn_h * 0.50))
+                cta_font_size = max(48, int(btn_h * 0.09))
                 try: cta_font = ImageFont.truetype("arialbd.ttf", cta_font_size)
                 except: cta_font = ImageFont.load_default()
                 cta_text_label = st.session_state.get("global_cta_text_field", "Shop Now")
-                try: cta_w = draw.textlength(cta_text_label, font=cta_font)
-                except: cta_w = len(cta_text_label) * int(cta_font_size * 0.55)
-                cta_inside_x = int(w / 2) - int(cta_w / 2)
-                cta_inside_y = btn_y1 + int((btn_h - cta_font_size) / 2) - 2
+                
+                try:
+                    bbox = draw.textbbox((0, 0), cta_text_label, font=cta_font)
+                    cta_w = bbox[2] - bbox[0]
+                    cta_h = bbox[3] - bbox[1]
+                except:
+                    cta_w = len(cta_text_label) * int(cta_font_size * 0.9)
+                    cta_h = cta_font_size
+                    
+                cta_inside_x = btn_x1 + (btn_w - cta_w) // 2
+                cta_inside_y = btn_y1 + (btn_h - cta_h) / 2) - 2
+                
                 draw.text((cta_inside_x + 1, cta_inside_y + 1), cta_text_label, fill=(0, 0, 0), font=cta_font)
                 draw.text((cta_inside_x, cta_inside_y), cta_text_label, fill="#FFFFFF", font=cta_font)       
             if scarcity_tag:
