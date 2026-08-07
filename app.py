@@ -8,6 +8,19 @@ import textwrap
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageEnhance, ImageOps
 import time
 import base64
+img = Image.new("RGBA", (400, 200), (0, 0, 0, 255))
+draw = ImageDraw.Draw(img)
+try:
+    font = ImageFont.truetype("fonts/arialbd.ttf", 100)
+except:
+    font = ImageFont.load_default()
+text = "Ad"
+text_w, text_h = draw.textsize(text, font=font)
+x = (img.width - text_w // 2)
+y = (img.height - text_h // 2)
+draw.text((x, y), text, font=font, fill=()255, 255, 255, 255)
+img.save("text_ad_text.png")
+img.show()
 @st.cache_data(show_spinner=False)
 def get_global_logo_uri():
     if os.path.exists("logo.png"):
@@ -1044,7 +1057,7 @@ else:
                 badge_draw = ImageDraw.Draw(badge_overlay)
                 badge_draw.rounded_rectangle([ad_corner_x1, ad_corner_y1, ad_corner_x1 + ad_box_w, ad_corner_y1 + ad_box_h], fill=(15, 23, 42, 90), radius=4)
                 ad_label_font_size = 100
-                try: ad_label_font = ImageFont.truetype("C:/Users/albertina/Desktop/mystudio/arial.ttf/ARIAL.TTF", ad_label_font_size)
+                try: ad_label_font = ImageFont.truetype("arial.tff", ad_label_font_size)
                   
                 except Exception as e:
                     print(f"Failed to load font: {e}")
