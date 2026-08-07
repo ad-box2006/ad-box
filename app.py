@@ -15,7 +15,7 @@ try:
 except:
     font = ImageFont.load_default()
 text = "Ad"
-text_w, text_h = draw.textsize(text, font=font)
+text_w, text_h = draw.textlength(text, font=font)
 x = (img.width - text_w) // 2
 y = (img.height - text_h) // 2
 draw.text((x, y), text, font=font, fill=(255, 255, 255, 255))
