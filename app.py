@@ -1035,22 +1035,22 @@ else:
                 draw.text((sponsor_text_x + 2, sponsor_text_y + 2), "Sponsored", fill=(0, 0, 0), font=sponsor_font)
                 draw.text((sponsor_text_x, sponsor_text_y), "Sponsored", fill=(178, 178, 178), font=sponsor_font)
             else:
-                ad_box_w = max(110, int(w * 0.12))
-                ad_box_h = max(50, int(h * 0.06))
+                ad_box_w = max(180, int(w * 0.29))
+                ad_box_h = max(100, int(h * 0.12))
            
                 ad_corner_x1 = int(w * 0.04)
                 ad_corner_y1 = int(h * 0.04)
                 badge_overlay = Image.new("RGBA", processed_layer.size, (0, 0, 0, 0))
                 badge_draw = ImageDraw.Draw(badge_overlay)
                 badge_draw.rounded_rectangle([ad_corner_x1, ad_corner_y1, ad_corner_x1 + ad_box_w, ad_corner_y1 + ad_box_h], fill=(15, 23, 42, 90), radius=4)
-                ad_label_font_size = max(30, int(w * 0.045))
+                ad_label_font_size = max(60, int(w * 0.09))
                 try: ad_label_font = ImageFont.truetype(font_bold_path, ad_label_font_size)
                 except: ad_label_font = ImageFont.load_default() 
              
                 try: ad_text_w = draw.textlength("Ad", font=ad_label_font)
-                except: ad_text_w = len("Ad") *  (ad_label_font_size * 2.500)
+                except: ad_text_w = len("Ad") *  (ad_label_font_size * 0.9)
                 ad_txt_x = ad_corner_x1 + int((ad_box_w - ad_text_w) / 2)
-                ad_txt_y = ad_corner_y1 + int((ad_box_h - ad_label_font_size) / 10) - 2
+                ad_txt_y = ad_corner_y1 + int((ad_box_h - ad_label_font_size) / 2) - 2
                 badge_draw.text((ad_txt_x, ad_txt_y), "Ad", fill=(255, 255, 255, 255), font=ad_label_font) 
                 processed_layer.paste(badge_overlay, (0, 0), mask=badge_overlay)
                 draw = ImageDraw.Draw(processed_layer)
