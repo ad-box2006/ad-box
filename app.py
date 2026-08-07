@@ -19,7 +19,7 @@ text_w, text_h = draw.textsize(text, font=font)
 x = (img.width - text_w) // 2
 y = (img.height - text_h) // 2
 draw.text((x, y), text, font=font, fill=(255, 255, 255, 255))
-img.save("text_ad_text.png")
+img.save("test_ad_text.png")
 img.show()
 @st.cache_data(show_spinner=False)
 def get_global_logo_uri():
