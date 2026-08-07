@@ -8,21 +8,19 @@ import textwrap
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageEnhance, ImageOps
 import time
 import base64
-
-@st.cache_data(show_spinner=False)
-def get_global_logo_uri():
+def get_encoded_logo():
     if os.path.exists("logo.png"):
         with open("logo.png", "rb") as image_file:
-            return f"data:image/png;base64,{base64.b64encode(image_file.read()).decode()}"
+            return base64.b64encode(image_file.read()).decode()
     return None
-CACHED_LOGO_URI = get_global_logo_uri()
 if "show_splash" not in st.session_state:
     st.session_state.show_splash = True
     st.session_state.splash_start_time = time.time()
-SPLASH_DURATION = 2
+SPLASH_DURATION = 3
 def show_splash():
-    logo_src = CACHED_LOGO_URI if CACHED_LOGO_URI else ""
-     
+    with open("logo.png", "rb") as image_file:
+        encoded_logo = base64.b64encode(image_file.read()).decode()
+    
     st.markdown(
         f"""     
         <style>
@@ -38,10 +36,34 @@ def show_splash():
             padding: 2px;
             border-radius: 8px;
         }}
+        @keyframes pulseZoom {{
+            0% {{
+                transform: scale(1);
+                opacity: 1;
+            }}
+            50% {{
+                transform: scale(1.4);
+                 opacity: 0.85;
+            }}
+            100% {{
+                transform: scale(1);
+                 opacity: 1;
+            }}
+        }}
+        .pulse-zoom {{
+            animation-name: pulseZoom;
+            animation-duration: 2.5s;
+            animation-iteration-count: infinite;
+            animation-timing-function: ease-in-out;
+            animation-fill-mode: forwards;
+            will-change: transform, opacity;                      
+            filter: saturate(1.1) contrast(1.05);
+            box-shadow: none;
+        }}
         
         </style>
         <div style="display:flex; justify-content:center; align-items:center; height:80vh; flex-direction:column;">
-            <img src="{logo_src}" class="static-logo"style="width:100px; height:100px;" />
+            <img src="data:image/png;base64,{encoded_logo}" class="pulse-zoom" style="width:100px; height:100px;" />
             <h2 style="color:#2563EB; font-family: 'Inter' sans-serif; margin-top: 2px; padding-left: 12px;">Ad-Box</h2>
         </div>
         """,
@@ -57,6 +79,7 @@ if st.session_state.show_splash:
         time.sleep(0.1)
         st.rerun()
     st.stop()
+
 def get_cached_social_icon(filename, target_size):
     main_folder_path = filename
     asset_folder_path = os.path.join("assets", filename)
@@ -190,7 +213,6 @@ def inject_login_styles():
         .stMain h1, stMain h2, stMain h3, stMain p, stMain label {
             color: #F8FAFC !important;
             font-family: 'Inter', sans-serif !important;
-            font-size: 18px !important;
         }
         h1, [data-testid="stMarkdownContainer"] h1 {
             background: linear-gradient(to right, #3B82F6, #8B5CF6) !important;
@@ -549,10 +571,11 @@ if not st.session_state.logged_in:
             st.rerun()
 else:
     inject_core_dashboard_styles()
-    if CACHED_LOGO_URI:
+    logo_data = get_encoded_logo()
+    if logo_data:
         st.markdown(f"""
             <div style="position: fixed; top: 15px; left: 50px; z-index: 999999 !important; pointer-events: none !important;;">
-                <img src="{CACHED_LOGO_URI}" width="30" height="30">
+                <img src="data:image/png;base64,{logo_data}" width="30" height="30">
             </div>
         """, unsafe_allow_html=True)
     st.sidebar.markdown("### Ad-Box Panel")
@@ -673,8 +696,6 @@ else:
             selected_hook_template = st.selectbox("Select your ad hook template", options=FREE_PRESET_HOOKS, key="ad_hook_selection_widget")
             active_product_text = product_name_val.strip() if product_name_val else "Product"
             final_processed_hook_text = selected_hook_template.format(product_name=active_product_text) if FREE_PRESET_HOOKS else "Explore catalog collections today."
-            
-            
             st.session_state.ga_brightness = st.slider("Base Image Brightness Scale", 0.5, 2.0, 1.0)
             st.session_state.ga_contrast = st.slider("Base Image Contrast Scale", 0.5, 2.0, 1.1)
             st.session_state.ga_blur = st.slider("Layer Blur Filter Intensity", 0, 10, 0)
@@ -808,60 +829,70 @@ else:
             is_tall_ratio = h > w
             is_square_ratio = abs(w - h) < (max(w, h) * 0.05)
             btn_w = int(w * 0.88)
-            btn_h = max(50, int(h * 0.06))
+            btn_h = max(36, int(h * 0.052))
             btn_x1 = int((w - btn_w) / 2)
             is_social_ui_active = apply_ig_ui or apply_tiktok_ui
             if scarcity_tag:
-                banner_height = int(h * 0.10) if h > 0 else 120
+                banner_height = int(h * 0.08) if h > 0 else 120
                 if is_social_ui_active:
-                    btn_y1 = h - banner_height - btn_h - 40
+                    btn_y1 = h - banner_height - btn_h - 50
                 else:
-                    btn_y1 = h - banner_height - btn_h - 20
-                active_footer_ceiling = btn_y1
+                    btn_y1 = h - banner_height - btn_h - 12
+                #active_footer_ceiling = btn_y1
             else:
                 banner_height = 0
                 if is_social_ui_active:
-                    btn_y1 = h - btn_h - 50
+                    btn_y1 = h - btn_h - 60
                 else:
-                    btn_y1 = h - btn_h - 50
+                    btn_y1 = h - btn_h - 60
             
             if ad_enable_cta:
                 active_footer_ceiling = btn_y1
             else:
                 if scarcity_tag:
-                    active_footer_ceiling = h - banner_height - 20
+                    active_footer_ceiling = h - banner_height - 25
                 else:
-                    active_footer_ceiling = h - 30
-             
+                    active_footer_ceiling = h - 40 
+                        
+                
+            try:
+                font_headline = ImageFont.truetype("Arial.ttf", 36)
+                font_badge = ImageFont.truetype("Arial.ttf", 24)
+            except:
+                font_headline = ImageFont.load_default()
+                font_badge = ImageFont.load_default()
+                
             if st.session_state.get("ga_headline", ""):
                 wrapped_lines = textwrap.wrap(st.session_state.ga_headline, width=40)
-                line_height = int(headline_font_size * 1.2) if "headline_font_size" in locals() else 40
-                banner_height = 30 + (len(wrapped_lines) * line_height)
+                line_height = 40
+                banner_height = 40 + (len(wrapped_lines) * line_height)
       
                 overlay_layer = Image.new('RGBA', processed_layer.size, (0,0,0,0))
                 overlay_draw = ImageDraw.Draw(overlay_layer)
-                overlay_draw.rectangle([(0, 0), (canvas_w if 'canvas_w' in locals() else processed_layer.width, banner_height)], fill=(0, 0, 0, 180))
+                overlay_draw.rectangle([(0, 0), (canvas_w, banner_height)], fill=(0, 0, 0, 180))
                 processed_layer = Image.alpha_composite(processed_layer.convert("RGBA"), overlay_layer).convert("RGB")
                  
                 draw = ImageDraw.Draw(processed_layer)
-                current_y = 20
+                current_y = 30
                 for line in wrapped_lines:
-                    draw.text((20, current_y), line, fill="#FFFFFF", font=font_headline)
+                    draw.text((30, current_y), line, fill="#FFFFFF", font=font_headline)
                     current_y += line_height
-             
+                
+                
+                    
             if apply_ig_ui:
                 draw = ImageDraw.Draw(processed_layer)
                 w, h = processed_layer.size
                 
-                profile_radius = max(24, int(w * 0.04))
-                profile_x = int(w * 0.03)
-                profile_y = int(h * 0.03)
+                profile_radius = max(16, int(w * 0.035))
+                profile_x = int(w * 0.018)
+                profile_y = int(h * 0.02)
                 avatar_diameter = profile_radius * 2
                 
                 draw.ellipse([profile_x, profile_y, profile_x + avatar_diameter, profile_y + avatar_diameter], fill=(30, 41, 59))
-                creator_handle_font_size = max(46, int(w * 0.12))
-                try:
-                    creator_handle_font = ImageFont.truetype("arial.ttf", creator_handle_font_size)
+                
+                creator_handle_font_size = max(14, int(w * 0.037))
+                try: creator_handle_font = ImageFont.truetype("arialbd.ttf", creator_handle_font_size)
                 except:
                     try: creator_handle_font = ImageFont.truetype("arial.ttf", creator_handle_font_size)
                     except: creator_handle_font = ImageFont.load_default()
@@ -897,40 +928,39 @@ else:
                     try: avatar_font = ImageFont.truetype("arialbd.ttf", int(profile_radius * 1.1))
                     except: avatar_font = creator_handle_font
                     
-                    av_text_x = profile_x + int(profile_radius * 0.5)
-                    av_text_y = profile_y + int(profile_radius * 0.2)
+                    av_text_x = profile_x + int(profile_radius * 0.65)
+                    av_text_y = profile_y + int(profile_radius * 0.35)
                     draw.text((av_text_x + 1, av_text_y + 1), avatar_letter, fill=(0, 0, 0), font=avatar_font)
                     
                     draw.text((av_text_x, av_text_y), avatar_letter, fill=(255, 255, 255), font=avatar_font)
                 
-                metric_font_size = max(30, int(w * 0.06))
+                metric_font_size = max(12, int(w * 0.026))
                 try: metric_font = ImageFont.truetype("arial.ttf", metric_font_size)
                 except: metric_font = ImageFont.load_default()
                 
-                caption_font_size = max(30, int(w * 0.12))
+                caption_font_size = max(14, int(w * 0.028))
                 try: caption_font = ImageFont.truetype("arialbd.ttf", caption_font_size)
                 except:
                     try: caption_font = ImageFont.truetype("arial.ttf", caption_font_size)
                     except: caption_font = creator_handle_font
                     
                 text_margin_x = int(w * 0.04) 
-              #  is_landscape = w > h 
-                custom_hook = final_processed_hook_text if "final_processed_hook_text" in locals() else ""
+                is_landscape = w > h 
+                custom_hook = final_processed_hook_text
                 usable_pixel_width = int(w * 0.80)
                 estimated_char_pixel_width = int(caption_font_size * 0.55)
-                max_line_width = max(25, int(usable_pixel_width / estimated_char_pixel_width))
-              #  max_line_width = max(25, max_line_width)
+                max_line_width = int(usable_pixel_width / estimated_char_pixel_width)
+                max_line_width = max(25, max_line_width)
                 
                 wrapped_caption_lines = textwrap.wrap(final_processed_hook_text, width=max_line_width)
                 total_caption_lines_count = len(wrapped_caption_lines)
-                caption_line_height = int(caption_font_size * 1.8)
+                caption_line_height = int(caption_font_size * 1.5)
                 caption_block_height = total_caption_lines_count * caption_line_height
                 likes_row_height = 45 + int(metric_font_size * 1.25)
-                active_footer_ceiling = h - 120 if "active_footer_ceiling" not in locals() else active_footer_ceiling
                 current_caption_y = active_footer_ceiling - caption_block_height - likes_row_height - 45
                 draw.text((text_margin_x, current_caption_y), f"{display_handle} ", fill="#FFFFFF", font=caption_font)
                 
-                verified_icon = get_cached_social_icon("verified_icon.png", int(caption_font_size * 1.2)) if "get_cached_social_icon" in globals() else None
+                verified_icon = get_cached_social_icon("verified_icon.png", int(caption_font_size * 1.3))
                 if verified_icon:
                     bbox = draw.textbbox((0, 0), f"{display_handle} ", font=caption_font)
                     username_width = bbox[2] - bbox[0] 
@@ -944,10 +974,10 @@ else:
                     current_caption_y += caption_line_height
                 
                 current_caption_y += 70
-                try: likes_font = ImageFont.truetype(font_regular_path, metric_font_size)
+                try: likes_font = ImageFont.truetype("arial.ttf", metric_font_size)
                 except: likes_font = creator_handle_font
                 draw.text((text_margin_x, current_caption_y), "1,506 likes", fill="#0095F6", font=likes_font)      
-                icon_size = max(18, int(w * 0.040))
+                icon_size = max(14, int(w * 0.040))
                 icon_y = active_footer_ceiling - 50 if (ad_enable_cta or apply_ig_ui) else h - 50
                 target_icon_y = active_footer_ceiling - 70
                 lx = int(w * 0.05)
@@ -963,7 +993,7 @@ else:
                 ]
                 for filename, x_pos in icon_mapping:
                             
-                    icon_img = get_cached_social_icon(filename, icon_size) if "get_cached_social_icon" in globals() else None
+                    icon_img = get_cached_social_icon(filename, icon_size)
                     if icon_img:
           
                         processed_layer.paste(icon_img, (x_pos, target_icon_y), mask=icon_img)
@@ -973,35 +1003,35 @@ else:
                 draw = ImageDraw.Draw(processed_layer)
             
             if ad_enable_cta:
-                btn_y1 = active_footer_ceiling + 8 if "active_footer_ceiling" in locals() else h - 100
+                btn_y1 = active_footer_ceiling + 8
                 btn_x2 = btn_x1 + btn_w
                 btn_y2 = btn_y1 + btn_h
                 cylinder_radius = btn_h // 2
                 draw.rounded_rectangle([btn_x1, btn_y1, btn_x2, btn_y2], fill="#1E73EB", radius=cylinder_radius)
-                cta_font_size = max(60, int(btn_h * 0.90))
-                try: cta_font = ImageFont.truetype(font_bold_path, cta_font_size)
+                cta_font_size = max(15, int(btn_h * 0.50))
+                try: cta_font = ImageFont.truetype("arialbd.ttf", cta_font_size)
                 except: cta_font = ImageFont.load_default()
                 cta_text_label = st.session_state.get("global_cta_text_field", "Shop Now")
                 try: cta_w = draw.textlength(cta_text_label, font=cta_font)
-                except: cta_w = len(cta_text_label) * int(cta_font_size * 0.90)
+                except: cta_w = len(cta_text_label) * int(cta_font_size * 0.55)
                 cta_inside_x = int(w / 2) - int(cta_w / 2)
                 cta_inside_y = btn_y1 + int((btn_h - cta_font_size) / 2) - 2
                 draw.text((cta_inside_x + 1, cta_inside_y + 1), cta_text_label, fill=(0, 0, 0), font=cta_font)
                 draw.text((cta_inside_x, cta_inside_y), cta_text_label, fill="#FFFFFF", font=cta_font)       
             if scarcity_tag:
                 w, h = processed_layer.size
-                banner_height = int(h * 0.10) if h > 0 else 140
+                banner_height = int(h * 0.08) if h > 0 else 120
                 draw = ImageDraw.Draw(processed_layer)
                 draw.rectangle([(0, h - banner_height), (w, h)], fill="#DC2626")
-                font_size_badge = max(30, int(banner_height * 0.07)) if h > w else max(30, int(w * 0.06))
-                try: font_badge = ImageFont.truetype(font_bold_path, font_size_badge)
+                font_size_badge = max(20, int(banner_height * 0.42)) if h > w else max(20, int(w * 0.035))
+                try: font_badge = ImageFont.truetype("arialbd.ttf", font_size_badge)
                 except: font_badge = ImageFont.load_default()
                       
                 try:
                     badge_text_width = draw.textlength(scarcity_text, font=font_badge)
                     badge_text_height = font_size_badge
                 except:
-                    badge_text_width = len(scarcity_text) * int(font_size_badge * 10.1000)
+                    badge_text_width = len(scarcity_text) * int(font_size_badge * 0.55)
                     badge_text_height = font_size_badge
                 banner_center_x = int((w - badge_text_width) / 2)
                 banner_center_y = int(h - (banner_height / 2) - (badge_text_height / 2))
@@ -1009,8 +1039,8 @@ else:
                 draw.text((banner_center_x, banner_center_y), scarcity_text, fill="#FFFFFF", font=font_badge)
             
             if apply_ig_ui:
-                f_size = profile_font_size if 'profile_font_size' in locals() else max(18, int(w * 0.03))   
-                sponsor_font_size = max(14, int(f_size * 0.8))
+                f_size = profile_font_size if 'profile_font_size' in locals() else max(14, int(w * 0.03))   
+                sponsor_font_size = max(11, int(f_size * 0.8))
                 try: sponsor_font = ImageFont.truetype("arial.ttf", sponsor_font_size)
                 except: sponsor_font = ImageFont.load_default()
                 profile_radius_calc = max(16, int(w * 0.035))
@@ -1023,25 +1053,22 @@ else:
                 draw.text((sponsor_text_x + 2, sponsor_text_y + 2), "Sponsored", fill=(0, 0, 0), font=sponsor_font)
                 draw.text((sponsor_text_x, sponsor_text_y), "Sponsored", fill=(178, 178, 178), font=sponsor_font)
             else:
-                ad_box_w = max(108, int(w * 0.012))
-                ad_box_h = max(50, int(h * 0.06))
+                ad_box_w = max(38, int(w * 0.065))
+                ad_box_h = max(18, int(h * 0.038))
            
                 ad_corner_x1 = int(w * 0.04)
                 ad_corner_y1 = int(h * 0.04)
                 badge_overlay = Image.new("RGBA", processed_layer.size, (0, 0, 0, 0))
                 badge_draw = ImageDraw.Draw(badge_overlay)
                 badge_draw.rounded_rectangle([ad_corner_x1, ad_corner_y1, ad_corner_x1 + ad_box_w, ad_corner_y1 + ad_box_h], fill=(15, 23, 42, 90), radius=4)
-                ad_label_font_size = 100
-                try: ad_label_font = ImageFont.truetype("arial.tff", ad_label_font_size)
-                  
-                except:
-                   
-                    ad_label_font = ImageFont.load_default() 
+                ad_label_font_size = max(11, int(w * 0.024))
+                try: ad_label_font = ImageFont.truetype("arialbd.ttf", ad_label_font_size)
+                except: ad_label_font = ImageFont.load_default() 
              
                 try: ad_text_w = draw.textlength("Ad", font=ad_label_font)
-                except: ad_text_w = len("Ad") *  (ad_label_font_size * 0.9)
+                except: ad_text_w = len("Ad") *  (ad_label_font_size * 0.5)
                 ad_txt_x = ad_corner_x1 + int((ad_box_w - ad_text_w) / 2)
-                ad_txt_y = ad_corner_y1 + int((ad_box_h - ad_label_font_size) / 2) - 2
+                ad_txt_y = ad_corner_y1 + int((ad_box_h - ad_label_font_size) / 2) - 1
                 badge_draw.text((ad_txt_x, ad_txt_y), "Ad", fill=(255, 255, 255, 255), font=ad_label_font) 
                 processed_layer.paste(badge_overlay, (0, 0), mask=badge_overlay)
                 draw = ImageDraw.Draw(processed_layer)
@@ -1051,7 +1078,7 @@ else:
                 w, h = processed_layer.size
                 circle_radius = int((w + h) * 0.055) if w > 0 else 80
                 circle_diameter = circle_radius * 2
-                font_size_sticker = max(29, int(circle_radius * 0.38))
+                font_size_sticker = max(22, int(circle_radius * 0.38))
                 try: font_sticker = ImageFont.truetype("arialbd.ttf", font_size_sticker)
                 except:
                     try: font_sticker = ImageFont.truetype("arial.ttf", font_size_sticker)
@@ -1108,10 +1135,10 @@ else:
                 tiktok_draw = ImageDraw.Draw(processed_layer)
                 w, h = processed_layer.size
                 scale_factor = (w + h) / 2
-                ui_font_size = int(scale_factor * 0.05)
-                ui_font_size = max(ui_font_size, 24)
-                icon_font_size = int(scale_factor * 0.05)
-                icon_font_size = max(icon_font_size, 24)
+                ui_font_size = int(scale_factor * 0.027) if scale_factor > 0 else 27
+                ui_font_size = max(ui_font_size, 16)
+                icon_font_size = int(scale_factor * 0.029) if scale_factor > 0 else 29
+                
                 try:
                     ui_font = ImageFont.truetype("arial.ttf", ui_font_size)
                     ui_font_bold = ImageFont.truetype("arial.ttf", ui_font_size)
@@ -1164,7 +1191,7 @@ else:
                     disc_radius = int(w * 0.045)
                     
                     icon_target_size = int(disc_radius * 1.1)
-                    icon_img = get_cached_social_icon(img_name, icon_target_size) if "get_cached_social_icon" in globals() else None
+                    icon_img = get_cached_social_icon(img_name, icon_target_size)
                     if icon_img:
                         if i == 0:
                             r, g, b, a = icon_img.split()
@@ -1180,7 +1207,7 @@ else:
                 active_handle = f"@{handle_input.lstrip('@')}"
                 text_margin_x = int(w * 0.04)
                 is_landscape = w > h
-                raw_caption_string = final_processed_hook_text if "final_processed_hook_text" in locals() else ""
+                raw_caption_string = final_processed_hook_text
                 if is_landscape:
                     max_line_width = max(22, int(w * 0.05))
                 else:
@@ -1188,12 +1215,11 @@ else:
                 
                 wrapped_caption_lines = textwrap.wrap(raw_caption_string, width=max_line_width)
                 total_caption_lines_count = len(wrapped_caption_lines)
-                active_footer_ceiling = h - 120 if "active_footer_ceiling" not in locals() else active_footer_ceiling
                 lower_base_y = active_footer_ceiling - int(ui_font_size * (total_caption_lines_count + 1.8)) - 40
                
-                tiktok_draw.text((text_margin_x, lower_base_y), active_handle, fill="#FFFFFF", font=ImageFont.truetype("arial.ttf", int(ui_font_size * 1.40)))
+                tiktok_draw.text((text_margin_x, lower_base_y), active_handle, fill="#FFFFFF", font=ImageFont.truetype("arial.ttf", int(ui_font_size * 1.3)))
                 verified_icon_size = int(ui_font_size * 1.6)
-                verified_icon = get_cached_social_icon("verified_icon (2).png", verified_icon_size) if "get_cached_social_icon"  in globals() else None
+                verified_icon = get_cached_social_icon("verified_icon (2).png", verified_icon_size)
                 if verified_icon:
                     bbox = tiktok_draw.textbbox((0, 0), active_handle, font=ImageFont.truetype("arial.ttf", int(ui_font_size * 1.3)))
                     username_width = bbox[2] - bbox[0] 
@@ -1206,10 +1232,9 @@ else:
                     
                     tiktok_draw.text((text_margin_x, current_caption_y), line_item, fill="#FFFFFF", font=ImageFont.truetype("arial.ttf", int(ui_font_size * 1.2)))
                     current_caption_y += int(ui_font_size * 1.20)
-                niche_val = niche if "niche" in locals() else "Standard"
-                if niche_val == "Problem/Solution":
+                if niche == "Problem/Solution":
                     dynamic_audio = " Original sound - Ecom Growth Hacks"
-                elif niche_val == "Impulse Buy Scarcity":
+                elif niche == "Impulse Buy Scarcity":
                     dynamic_audio = " Trending Sound - Viral Product Audio (Locked)"
                 else:
                     dynamic_audio = " Special Promo - Store Clearance Track"
@@ -1227,7 +1252,7 @@ else:
                     text_x = text_margin_x
                 tiktok_draw.text((text_x, music_y), dynamic_audio, fill=(255, 255, 255, 191), font=ui_font)
             
-        if "tab2" in locals() and tab2:
+        if tab2:
             with tab2:
                 st.markdown("### Registered System Accounts")
                 st.write("Manage active users authorized to use this workstation instance.")
@@ -1245,69 +1270,69 @@ else:
                                 st.success(f"Remove Account: {register_name}")
                                 st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
-        if "app_left_col" in locals():
-            with app_left_col:
-                st.markdown(
-                    """
-                    <style>
-                    div[data-testid="stHorizontalBlock"] button[data-testid="stBaseButton-primary"] {
-                        background: linear-gradient(135deg, #1E40AF, #2563EB) !important;
-                        color: #FFFFFF !important;
-                        border: none !important;
-                        border-radius: 10px !important;
-                        box-shadow: 0px 4px 10px rgba(37, 99, 235, 0.2) !important;
-                        font-weight: 600 !important;
-                        max-width: 220px !important;
-                    }
-                    div[data-testid="stHorizontalBlock"] button[data-testid="stBaseButton-primary"]:hover {
-                        background: linear-gradient(135deg, #2563EB, #3B82F6) !important;
-                        box-shadow: 0px 4px 15px rgba(37, 99, 235, 0.4) !important;
-                        color: blue !important;
-                    }
+        
+        with app_left_col:
+            st.markdown(
+                """
+                <style>
+                div[data-testid="stHorizontalBlock"] button[data-testid="stBaseButton-primary"] {
+                    background: linear-gradient(135deg, #1E40AF, #2563EB) !important;
+                    color: #FFFFFF !important;
+                    border: none !important;
+                    border-radius: 10px !important;
+                    box-shadow: 0px 4px 10px rgba(37, 99, 235, 0.2) !important;
+                    font-weight: 600 !important;
+                    max-width: 220px !important;
+                }
+                div[data-testid="stHorizontalBlock"] button[data-testid="stBaseButton-primary"]:hover {
+                    background: linear-gradient(135deg, #2563EB, #3B82F6) !important;
+                    box-shadow: 0px 4px 15px rgba(37, 99, 235, 0.4) !important;
+                    color: blue !important;
+                }
                     
-                    </style>
-                """, unsafe_allow_html=True)
-                st.markdown("---")
-                st.markdown("### LIVE AD PREVIEW")
-                if "processed_layer" in locals() and processed_layer is not None:
-                    st.image(processed_layer, width="stretch", output_format="PNG")
-                elif "adcraft_active_canvas" in st.session_state and st.session_state["ad-box_active_canvas"] is not None:
-                    st.image(st.session_state["ad-box_active_canvas"], width="stretch", output_format="PNG")         
-                else:
-                    st.info("Upload your product to generate your ad canvas preview.")
-                st.markdown("### EXPORT MEDIA")
-                st.markdown('<div class="export-box-row">', unsafe_allow_html=True)
+                </style>
+            """, unsafe_allow_html=True)
+            st.markdown("---")
+            st.markdown("### LIVE AD PREVIEW")
+            if "processed_layer" in locals() and processed_layer is not None:
+                st.image(processed_layer, width="stretch", output_format="PNG")
+            elif "adcraft_active_canvas" in st.session_state and st.session_state["ad-box_active_canvas"] is not None:
+                st.image(st.session_state["ad-box_active_canvas"], width="stretch", output_format="PNG")         
+            else:
+                st.info("Upload your product to generate your ad canvas preview.")
+            st.markdown("### EXPORT MEDIA")
+            st.markdown('<div class="export-box-row">', unsafe_allow_html=True)
             
-                sub_col_left, sub_col_right = st.columns([0.9, 1.1], gap="small")
-                with sub_col_left:
-                    export_format_selection = st.selectbox(
-                        "Format Output presets",
-                        ["PNG (High-Res)", "JPEG (Compressed)"],
-                        label_visibility="collapsed",
-                        key="export_format_selector_widget"
-                    )
-                with sub_col_right:               
-                    export_buffer = io.BytesIO()
-                    if uploaded_file is not None:
-                        if "PNG" in export_format_selection:
-                            processed_layer.save(export_buffer, format="PNG")
-                            mime_string_type = "image/png"
-                            file_extension_tag = "png"
-                        else:        
-                            processed_layer.convert("RGB").save(export_buffer, format="JPEG", quality=95)
-                            mime_string_type = "image/jpeg"
-                            file_extension_tag = "jpg"
-                    else:
+            sub_col_left, sub_col_right = st.columns([0.9, 1.1], gap="small")
+            with sub_col_left:
+                export_format_selection = st.selectbox(
+                    "Format Output presets",
+                    ["PNG (High-Res)", "JPEG (Compressed)"],
+                    label_visibility="collapsed",
+                    key="export_format_selector_widget"
+                )
+            with sub_col_right:               
+                export_buffer = io.BytesIO()
+                if uploaded_file is not None:
+                    if "PNG" in export_format_selection:
+                        processed_layer.save(export_buffer, format="PNG")
                         mime_string_type = "image/png"
                         file_extension_tag = "png"
-                    st.download_button(
-                        label=f"Save .{file_extension_tag.upper()} Asset",
-                        data=export_buffer.getvalue(),
-                        file_name=f"adcraft_output.{file_extension_tag}",
-                        mime=mime_string_type,
-                        type="primary"
+                    else:        
+                        processed_layer.convert("RGB").save(export_buffer, format="JPEG", quality=95)
+                        mime_string_type = "image/jpeg"
+                        file_extension_tag = "jpg"
+                else:
+                    mime_string_type = "image/png"
+                    file_extension_tag = "png"
+                st.download_button(
+                    label=f"Save .{file_extension_tag.upper()} Asset",
+                    data=export_buffer.getvalue(),
+                    file_name=f"adcraft_output.{file_extension_tag}",
+                    mime=mime_string_type,
+                    type="primary"
                           
-                    )
+                )
            
                     
                  
