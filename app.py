@@ -1009,7 +1009,7 @@ else:
                 cylinder_radius = btn_h // 2
                 draw.rounded_rectangle([btn_x1, btn_y1, btn_x2, btn_y2], fill="#1E73EB", radius=cylinder_radius)
                 cta_font_size = max(72, int(btn_h * 1.0))
-                try: cta_font = ImageFont.truetype("ARIAL.TTF", cta_font_size)
+                try: cta_font = ImageFont.truetype("ARIAL.TTF", 72)
                 except: cta_font = ImageFont.load_default()
                 cta_text_label = st.session_state.get("global_cta_text_field", "Shop Now")
                 
