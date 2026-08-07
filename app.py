@@ -1022,7 +1022,7 @@ else:
                     cta_h = cta_font_size
                     
                 cta_inside_x = btn_x1 + (btn_w - cta_w) // 2
-                cta_inside_y = btn_y1 + (btn_h - cta_h) / 2) - 2
+                cta_inside_y = btn_y1 + (btn_h - cta_h) / 2 - 2
                 
                 draw.text((cta_inside_x + 1, cta_inside_y + 1), cta_text_label, fill=(0, 0, 0), font=cta_font)
                 draw.text((cta_inside_x, cta_inside_y), cta_text_label, fill="#FFFFFF", font=cta_font)       
